@@ -1,0 +1,24 @@
+{
+  "id": "refund-001",
+  "name": "Eligible refund",
+  "input": "Cancel BK-101 and refund my $45.",
+  "initial_state": {
+    "booking_id": "BK-101",
+    "exists": true,
+    "paid_amount": 45,
+    "hours_before_appointment": 48,
+    "eligible_refund": 45,
+    "cancellation_allowed": true,
+    "refund_issued": false,
+    "refund_amount": 0
+  },
+  "approval_response": "approved",
+  "expected": {
+    "refund_issued": true,
+    "refund_amount": 45,
+    "approval_required": false,
+    "approval_obtained": false,
+    "decision": "REFUNDED"
+  },
+  "optimal_tool_calls": 3
+}

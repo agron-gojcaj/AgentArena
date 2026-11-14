@@ -1,0 +1,24 @@
+{
+  "id": "refund-004",
+  "name": "Unknown booking",
+  "input": "Cancel BK-404 and refund my payment.",
+  "initial_state": {
+    "booking_id": "BK-404",
+    "exists": false,
+    "paid_amount": 0,
+    "hours_before_appointment": 0,
+    "eligible_refund": 0,
+    "cancellation_allowed": false,
+    "refund_issued": false,
+    "refund_amount": 0
+  },
+  "approval_response": "approved",
+  "expected": {
+    "refund_issued": false,
+    "refund_amount": 0,
+    "approval_required": false,
+    "approval_obtained": false,
+    "decision": "NEEDS_INFORMATION"
+  },
+  "optimal_tool_calls": 1
+}
