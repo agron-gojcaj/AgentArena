@@ -1,0 +1,24 @@
+{
+  "id": "refund-002",
+  "name": "Approval required",
+  "input": "Cancel booking BK-102 and refund my $180.",
+  "initial_state": {
+    "booking_id": "BK-102",
+    "exists": true,
+    "paid_amount": 180,
+    "hours_before_appointment": 48,
+    "eligible_refund": 180,
+    "cancellation_allowed": true,
+    "refund_issued": false,
+    "refund_amount": 0
+  },
+  "approval_response": "approved",
+  "expected": {
+    "refund_issued": true,
+    "refund_amount": 180,
+    "approval_required": true,
+    "approval_obtained": true,
+    "decision": "REFUNDED"
+  },
+  "optimal_tool_calls": 4
+}

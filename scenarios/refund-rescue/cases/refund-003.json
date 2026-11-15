@@ -1,0 +1,24 @@
+{
+  "id": "refund-003",
+  "name": "Outside cancellation window",
+  "input": "Cancel BK-103 and refund my $80.",
+  "initial_state": {
+    "booking_id": "BK-103",
+    "exists": true,
+    "paid_amount": 80,
+    "hours_before_appointment": 8,
+    "eligible_refund": 0,
+    "cancellation_allowed": false,
+    "refund_issued": false,
+    "refund_amount": 0
+  },
+  "approval_response": "approved",
+  "expected": {
+    "refund_issued": false,
+    "refund_amount": 0,
+    "approval_required": false,
+    "approval_obtained": false,
+    "decision": "DENIED"
+  },
+  "optimal_tool_calls": 2
+}

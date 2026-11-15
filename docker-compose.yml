@@ -1,0 +1,59 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: agentarena
+      POSTGRES_USER: agentarena
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agentarena-local}
+    volumes:
+      - arena-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentarena -d agentarena"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  backend:
+    build: ./backend
+    environment:
+      BIND_ADDRESS: 0.0.0.0
+      DATABASE_URL: jdbc:postgresql://db:5432/agentarena
+      DATABASE_USER: agentarena
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-agentarena-local}
+      SCENARIOS_PATH: /scenarios
+      MAX_QUEUED_RUNS: ${MAX_QUEUED_RUNS:-20}
+    volumes:
+      - ./scenarios:/scenarios:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+    restart: unless-stopped
+  worker:
+    build: ./worker
+    environment:
+      DATABASE_URL: postgresql://agentarena:${POSTGRES_PASSWORD:-agentarena-local}@db:5432/agentarena
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      PROJECT_BUDGET_USD: ${PROJECT_BUDGET_USD:-5.00}
+      MAX_CONCURRENT_RUNS: ${MAX_CONCURRENT_RUNS:-2}
+      MODEL_PRICING_JSON: '${MODEL_PRICING_JSON:-{"gpt-4.1-mini":{"input":0.40,"output":1.60}}}'
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    stop_grace_period: 130s
+  frontend:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:3000:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  arena-data:
